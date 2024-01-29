@@ -120,13 +120,14 @@ export default function TextForm(props) {
   };
 
   const handleCopy = () => {
-    let text = document.getElementById('myBox');
-    navigator.clipboard.writeText(text.value);
+    // let text = document.getElementById('myBox');
+    navigator.clipboard.writeText(text);
+    // document.getSelection().removeAllRanges();
     props.showAlert("Copied to Clipboard!","success")  
   }
 
   const handleExtraSpace = () => {
-    let nextText = text.split(/[ ]+/);
+    let nextText = text.split(/^\s*|\s*$/gm);
     setText(nextText.join(" "));
     props.showAlert("Extra spaces removed!","success")  
   }
@@ -207,21 +208,21 @@ export default function TextForm(props) {
     <div className='container' style={{color:props.mode==='dark'?'white':'#042743'}}>
       <h1>{props.heading} </h1>
       <div className="mb-3">
-            <textarea className="form-control" value={text || transcript} onChange={handleOnChange} style={{backgroundColor:props.mode==='dark'?'grey':'white',
+            <textarea className="form-control" value={text || transcript} onChange={handleOnChange} style={{backgroundColor:props.mode==='dark'?'#13466e':'white',
           color:props.mode==='dark'?'white':'black'}} id="myBox" rows="8"></textarea>
-            <button className='btn btn-primary my-3'onClick={handleUpClick}>Convert to Uppercase</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handleLowClick}>Convert to Lowercase</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handleEnClick}>Convert to Encrypt Base64</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handleDeClick}>Convert to Decrypt Base64</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handlePlay}>{isPaused ? "Resume" : "Play"}</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handlePause} disabled={isPaused}>Pause</button>
-            {/* <button className='btn btn-primary my-3 mx-1' onClick={getDifferentVoice}>Change voice</button> */}
-            <button className='btn btn-primary my-3 mx-1' onClick={handleExtraSpace}>Remove Extra Space</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handleCopy}>Copy</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handleStartListening}>Start listening</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handleStopListening}>Stop listening</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={handleStopListening}>Stop listening</button>
-            <button className="btn btn-primary my-3 mx-1" onClick={() => setIsModalOpen(true)}>
+            <button disabled={text.length===0} className='btn btn-primary my-2'onClick={handleUpClick}>Convert to Uppercase</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleLowClick}>Convert to Lowercase</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleEnClick}>Convert to Encrypt Base64</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleDeClick}>Convert to Decrypt Base64</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handlePlay}>{isPaused ? "Resume" : "Play"}</button>
+            <button className='btn btn-primary my-2 mx-1' onClick={handlePause} disabled={isPaused || text.length===0}>Pause</button>
+            {/* <button disabled={text.length===0} className='btn btn-primary my-3 mx-1' onClick={getDifferentVoice}>Change voice</button> */}
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleExtraSpace}>Remove Extra Space</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleCopy}>Copy</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleStartListening}>Start listening</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleStopListening}>Stop listening</button>
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1' onClick={handleStopListening}>Stop listening</button>
+            <button disabled={text.length===0} className="btn btn-primary my-2 mx-1" onClick={() => setIsModalOpen(true)}>
             Import File
           </button>
             <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
@@ -230,15 +231,15 @@ export default function TextForm(props) {
               <p>Drag 'n' drop a file here, or click to select a file</p>
             </div>
           </Modal>
-            {/* <button className='btn btn-primary my-3 mx-1' onClick={handleResetTranscript}>Reset</button>
-            <button className='btn btn-primary my-3 mx-1' onClick={resetTranscript}>Reset</button> */}
-            {/* <button className="btn btn-primary my-3 mx-1" onClick={handleGrammarCheck}>Check Grammar</button> */}
-            <button className='btn btn-primary my-3 mx-1'onClick={handleClear}>Clear</button>
+            {/* <button disabled={text.length===0} className='btn btn-primary my-3 mx-1' onClick={handleResetTranscript}>Reset</button>
+            <button disabled={text.length===0} className='btn btn-primary my-3 mx-1' onClick={resetTranscript}>Reset</button> */}
+            {/* <button disabled={text.length===0} className="btn btn-primary my-3 mx-1" onClick={handleGrammarCheck}>Check Grammar</button> */}
+            <button disabled={text.length===0} className='btn btn-primary my-2 mx-1'onClick={handleClear}>Clear</button>
       </div>
     </div>
     <div className="container" style={{color:props.mode==='dark'?'white':'#042743'}}>
       <h2>Your text summary</h2>
-      <p>{text.trim() === '' ? 0 : text.trim().split(" ").length} words and {text.trim().length} charaters</p>
+      <p>{text.trim() === '' ? 0 : text.trim().split(/\s+/).length} words and {text.trim().length} charaters</p>
       <p>{text.trim() === ''? 0.00 : (0.008 * text.trim().split(" ").length).toFixed(2)} Minutes to read</p>
     </div>
     </>
